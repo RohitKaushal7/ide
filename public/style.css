@@ -1,0 +1,141 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.container {
+  width: 80%;
+  height: 80vh;
+  margin: 1rem auto;
+  padding: 1rem;
+  /* box-shadow: -2px 2px 12px #0003; */
+}
+.header {
+  width: 80%;
+  height: 5rem;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+h1 {
+  margin-bottom: 0rem;
+}
+small {
+  font-size: 0.6em;
+  color: #555;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 4fr 4fr 1fr;
+  grid-template-areas:
+    "code inp"
+    "code out"
+    "foot foot";
+  height: 100%;
+}
+
+.inp,
+.code,
+.out {
+  border-radius: 0.5rem;
+  overflow: none;
+}
+.code {
+  grid-area: code;
+  padding: 1rem;
+}
+.inp {
+  grid-area: inp;
+  padding: 1rem;
+}
+.out {
+  grid-area: out;
+  padding: 1rem;
+}
+
+.title {
+  width: 100%;
+  padding: 0 0.5rem;
+  color: #fff;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: #aaa;
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+}
+.yellow {
+  color: rgb(181, 184, 0);
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 0.2rem 0.2rem;
+  outline: none;
+}
+textarea:hover {
+  outline: none;
+}
+
+.footer {
+  grid-area: foot;
+  padding: 1rem;
+  position: relative;
+}
+
+.bar {
+  padding: 0.2rem;
+  background: yellow;
+  transition: all 0.5s;
+  width: 0;
+  margin: 0 0 1rem;
+  border-radius: 0.2rem;
+}
+
+.yy {
+  background: yellow;
+}
+
+.gg {
+  background: rgb(31, 187, 0);
+}
+.rr {
+  background: red;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  margin: 0 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+#comp {
+  background: rgb(31, 187, 0);
+  color: #fff;
+  font-weight: bold;
+}
+
+#code {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  padding: 0.5rem 0;
+  border: 2px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 0.2rem 0.2rem;
+  outline: none;
+}
