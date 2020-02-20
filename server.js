@@ -15,13 +15,13 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.post("/compile", (req, res) => {
+app.post("/cpp", (req, res) => {
   code = req.body.code;
   inp = req.body.inp;
   out = req.body.out;
   fs.writeFile("./code.cpp", code, err => {
     if (err) console.log(err);
-    console.log("saved code");
+    console.log("saved code cpp");
 
     fs.writeFile("./inp.txt", inp, err => {
       if (err) console.log(err);
@@ -34,17 +34,57 @@ app.post("/compile", (req, res) => {
         let sendOut;
         if (error) {
           console.log(`err: ${error}`);
-          let sendOut = { out: error, status: 500 };
-          res.json({ out: error.message, status: 501 });
-          // return;
-        }
-        if (stderr) {
-          let sendOut = { out: stdout, status: 500 };
-          // return;
+          sendOut = { out: error.message, status: 500 };
+          let msg = error.message.split("\n");
+          if (msg.length == 2) msg[0] = "tle";
+          else msg[0] = "";
+          msg = msg.join("");
+          console.log(msg);
+
+          res.json({ out: msg, status: 501 });
+          return;
         } else {
           sendOut = { out: stdout, status: 200 };
         }
-        // console.log(sendOut);
+        console.log(sendOut);
+        res.json(sendOut);
+      }
+    );
+  });
+  // console.log(req.body);
+});
+
+app.post("/python", (req, res) => {
+  code = req.body.code;
+  inp = req.body.inp;
+  fs.writeFile("./code.py", code, err => {
+    if (err) console.log(err);
+    console.log("saved code py");
+
+    fs.writeFile("./inp.txt", inp, err => {
+      if (err) console.log(err);
+      console.log("saved inp");
+    });
+
+    exec(
+      "timeout -k 1 5 python3 code.py < inp.txt",
+      (error, stdout, stderr) => {
+        let sendOut;
+        if (error) {
+          console.log(`err: ${error}`);
+          sendOut = { out: error.message, status: 500 };
+          let msg = error.message.split("\n");
+          if (msg.length == 2) msg[0] = "tle";
+          else msg[0] = "";
+          msg = msg.join("");
+          console.log(msg);
+
+          res.json({ out: msg, status: 501 });
+          return;
+        } else {
+          sendOut = { out: stdout, status: 200 };
+        }
+        console.log(sendOut);
         res.json(sendOut);
       }
     );

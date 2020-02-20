@@ -8,46 +8,64 @@
     <link rel="stylesheet" href="prism.css" />
   </head>
   <body>
-    <div class="header">
-      <h1>IDE <small>C++ compiler</small></h1>
-    </div>
-    <div class="container">
-      <form action="/compile" method="POST" id="main" class="main">
-        <div class="code">
-          <div class="title">code</div>
-          <div id="code"></div>
-        </div>
-        <div class="inp">
-          <div class="title">input</div>
-          <textarea id="inp" cols="50" rows="10"></textarea>
-        </div>
-        <div class="out">
-          <div class="title">output</div>
-          <textarea id="out" cols="50" rows="10"></textarea>
-        </div>
+    <main>
+      <div class="header">
+        <h1>
+          IDE
+          <small>
+            <select name="lang" id="lang" onchange="change()">
+              <option value="cpp">C++</option>
+              <option value="python">Python</option>
+            </select>
+            compiler</small
+          >
+        </h1>
+      </div>
+      <div class="container">
+        <form action="/compile" method="POST" id="main" class="main">
+          <div class="code">
+            <div class="title">code</div>
+            <div id="code"></div>
+          </div>
+          <div class="inp">
+            <div class="title">input</div>
+            <textarea id="inp" cols="50" rows="10"></textarea>
+          </div>
+          <div class="out">
+            <div class="title">output</div>
+            <textarea id="out" cols="50" rows="10"></textarea>
+          </div>
 
-        <div class="footer">
-          <div class="bar"></div>
-          <button type="submit" id="comp">Compile</button>
-          <button id="clear" type="reset">Clear</button>
-        </div>
-      </form>
-    </div>
+          <div class="footer">
+            <div class="bar"></div>
+            <button type="submit" id="comp">Compile</button>
+            <button id="clear" type="reset">Clear</button>
+          </div>
+        </form>
+      </div>
+    </main>
 
+    <script src="script.js"></script>
     <script src="monaco/vs/loader.js"></script>
     <script>
-      require.config({ paths: { vs: "monaco/vs" } });
       var editor;
-      require(["vs/editor/editor.main"], function() {
-        editor = monaco.editor.create(document.getElementById("code"), {
-          value: [
-            "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n\nreturn 0;\n}"
-          ].join("\n"),
-          language: "cpp"
+      require.config({ paths: { vs: "monaco/vs" } });
+      function load() {
+        document.getElementById("code").innerHTML = "";
+        require(["vs/editor/editor.main"], function() {
+          editor = monaco.editor.create(document.getElementById("code"), {
+            value:
+              lang == "cpp"
+                ? [
+                    "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n\nreturn 0;\n}"
+                  ].join("\n")
+                : ["print('Hello World')"].join("\n"),
+            language: lang
+          });
         });
-      });
+      }
+      load();
     </script>
-    <script src="script.js"></script>
     <script src="prism.js"></script>
   </body>
 </html>

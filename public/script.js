@@ -3,6 +3,12 @@ submit = document.querySelector("#comp");
 clr = document.querySelector("#clear");
 bar = document.querySelector(".bar");
 
+lang = "cpp";
+function change() {
+  lang = document.querySelector("#lang").value;
+  load();
+}
+
 form.addEventListener("submit", ev => {
   ev.preventDefault();
   // let code = document.querySelector("#code");
@@ -22,7 +28,7 @@ form.addEventListener("submit", ev => {
     out: out.value
   };
 
-  fetch("/compile", {
+  fetch("/" + lang, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -31,6 +37,8 @@ form.addEventListener("submit", ev => {
   })
     .then(res => res.json())
     .then(data => {
+      console.log(data.out);
+
       if (data.status == 200) {
         out.value = data.out;
         out.classList.remove("yellow");
@@ -38,7 +46,7 @@ form.addEventListener("submit", ev => {
         bar.style.width = "100%";
         bar.classList.remove("rr");
         bar.classList.add("gg");
-      } else if (data.out.indexOf("Command failed") != -1) {
+      } else if (data.out.indexOf("tle") != -1) {
         out.value = "Time Limit Exceeded 5 seconds.";
         out.classList.add("yellow");
         bar.style.width = "100%";
