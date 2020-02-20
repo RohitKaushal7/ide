@@ -61,5 +61,10 @@ form.addEventListener("submit", ev => {
         bar.classList.remove("gg");
         bar.classList.add("rr");
       }
+    })
+    .catch(e => {
+      console.log(e.message);
+      out.value = "Failed to Connect to server.. :(";
+      out.classList.add("red");
     });
 });
