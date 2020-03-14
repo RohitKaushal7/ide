@@ -8,42 +8,44 @@
     <link rel="stylesheet" href="prism.css" />
   </head>
   <body>
-    <main>
-      <div class="header">
-        <h1>
-          IDE
-          <small>
-            <select name="lang" id="lang" onchange="change()">
-              <option value="cpp">C++</option>
-              <option value="python">Python</option>
-            </select>
-            compiler</small
-          >
-        </h1>
-      </div>
-      <div class="container">
-        <form action="/compile" method="POST" id="main" class="main">
-          <div class="code">
-            <div class="title">code</div>
+    <div id="root">
+      <header>
+        <div>IDE</div>
+        <span class="tag">The Online Compiler.</span>
+      </header>
+      <div class="main">
+        <div class="ide-fields">
+          <div class="ip">
+            <div class="title">
+              code
+              <div class="lang">
+                <select name="lang" id="lang" onchange="change()"
+                  ><option value="cpp">c++</option
+                  ><option value="python">Python</option></select
+                >
+              </div>
+            </div>
             <div id="code"></div>
           </div>
-          <div class="inp">
-            <div class="title">input</div>
-            <textarea id="inp" cols="50" rows="10"></textarea>
+          <div class="io">
+            <div class="ip">
+              <div class="title">inp</div>
+              <textarea name="inp" id="inp"></textarea>
+            </div>
+            <div class="ip">
+              <div class="title">out</div>
+              <textarea name="out" id="out"></textarea>
+            </div>
           </div>
-          <div class="out">
-            <div class="title">output</div>
-            <textarea id="out" cols="50" rows="10"></textarea>
-          </div>
-
-          <div class="footer">
-            <div class="bar"></div>
-            <button type="submit" id="comp">Compile</button>
-            <button id="clear" type="reset">Clear</button>
-          </div>
-        </form>
+        </div>
+        <div class="outer">
+          <div class="inner"></div>
+        </div>
+        <button type="submit" id="Compile">Compile</button
+        ><button type="reset" id="Clear">Clear</button>
       </div>
-    </main>
+      <footer>Made with love by <b>Rohit Kaushal</b></footer>
+    </div>
 
     <script src="script.js"></script>
     <script src="monaco/vs/loader.js"></script>
@@ -66,6 +68,5 @@
       }
       load();
     </script>
-    <script src="prism.js"></script>
   </body>
 </html>

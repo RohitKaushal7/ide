@@ -1,7 +1,8 @@
-form = document.querySelector("form");
-submit = document.querySelector("#comp");
-clr = document.querySelector("#clear");
-bar = document.querySelector(".bar");
+Compile = document.querySelector("#Compile");
+clr = document.querySelector("#Clear");
+bar = document.querySelector(".inner");
+let inp = document.querySelector("#inp");
+let out = document.querySelector("#out");
 
 lang = "cpp";
 function change() {
@@ -9,11 +10,14 @@ function change() {
   load();
 }
 
-form.addEventListener("submit", ev => {
+clr.addEventListener("click", e => {
+  inp.value = "";
+  out.value = "";
+});
+
+Compile.addEventListener("click", ev => {
   ev.preventDefault();
   // let code = document.querySelector("#code");
-  let inp = document.querySelector("#inp");
-  let out = document.querySelector("#out");
   bar.style.width = "50%";
   bar.classList.remove("rr");
   bar.classList.remove("gg");
