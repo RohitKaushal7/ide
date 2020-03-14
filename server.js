@@ -91,28 +91,25 @@ app.post("/python", (req, res) => {
       console.log("saved inp");
     });
 
-    exec(
-      "timeout -k 1 5 python3 code.py < inp.txt",
-      (error, stdout, stderr) => {
-        let sendOut;
-        if (error) {
-          console.log(`err: ${error}`);
-          sendOut = { out: error.message, status: 500 };
-          let msg = error.message.split("\n");
-          if (msg.length == 2) msg[0] = "tle";
-          else msg[0] = "";
-          msg = msg.join("");
-          console.log(msg);
+    exec("timeout -k 1 5 python code.py < inp.txt", (error, stdout, stderr) => {
+      let sendOut;
+      if (error) {
+        console.log(`err: ${error}`);
+        sendOut = { out: error.message, status: 500 };
+        let msg = error.message.split("\n");
+        if (msg.length == 2) msg[0] = "tle";
+        else msg[0] = "";
+        msg = msg.join("");
+        console.log(msg);
 
-          res.json({ out: msg, status: 501 });
-          return;
-        } else {
-          sendOut = { out: stdout, status: 200 };
-        }
-        console.log(sendOut);
-        res.json(sendOut);
+        res.json({ out: msg, status: 501 });
+        return;
+      } else {
+        sendOut = { out: stdout, status: 200 };
       }
-    );
+      console.log(sendOut);
+      res.json(sendOut);
+    });
   });
   // console.log(req.body);
 });
