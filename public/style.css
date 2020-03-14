@@ -139,6 +139,18 @@ option {
   font-family: monospace;
 }
 
+@media (max-width: 720px) {
+  .ide-fields {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+  .ide-fields .ip {
+    width: 100%;
+  }
+}
+
 button {
   border: none;
   padding: 0.5rem 1rem;

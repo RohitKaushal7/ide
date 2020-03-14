@@ -101,6 +101,13 @@ option {
     padding: 0.5rem;
     font-family: monospace;
   }
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    .ip {
+      width: 100%;
+    }
+  }
 }
 button {
   border: none;
