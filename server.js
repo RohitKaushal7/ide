@@ -5,6 +5,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { exec } = require("child_process");
 
+const { scan } = require("./scan");
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,6 +31,12 @@ app.post("/cpp", (req, res) => {
   code = req.body.code;
   inp = req.body.inp;
   out = req.body.out;
+
+  if (scan(code)) {
+    res.json({ out: "You Cannot Interact with system", status: 200 });
+    return;
+  }
+
   fs.writeFile("./code.cpp", code, err => {
     if (err) console.log(err);
     console.log("saved code cpp");
@@ -67,6 +75,13 @@ app.post("/cpp", (req, res) => {
 app.post("/python", (req, res) => {
   code = req.body.code;
   inp = req.body.inp;
+
+  // security
+  if (scan(code)) {
+    res.json({ out: "You Cannot Interact with system", status: 200 });
+    return;
+  }
+
   fs.writeFile("./code.py", code, err => {
     if (err) console.log(err);
     console.log("saved code py");
@@ -103,4 +118,4 @@ app.post("/python", (req, res) => {
 });
 
 app.listen(process.env.PORT || 5000);
-console.log("server at : localhost:3000");
+console.log("server at : localhost:5000");
