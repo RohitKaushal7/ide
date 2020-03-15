@@ -1,18 +1,16 @@
 const path = require("path");
-const fs = require("fs");
-
+const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
-const { exec } = require("child_process");
-
-const { scan } = require("./scan");
 
 const app = express();
+const router = require("./routs");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// for API
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -23,96 +21,46 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+app.use(router);
 
-app.post("/cpp", (req, res) => {
-  code = req.body.code;
-  inp = req.body.inp;
-  out = req.body.out;
+// chat
+const server = http.createServer(app);
+const io = require("socket.io")(server);
 
-  if (scan(code)) {
-    res.json({ out: "You Cannot Interact with system", status: 200 });
-    return;
-  }
+const users = {};
 
-  fs.writeFile("./code.cpp", code, err => {
-    if (err) console.log(err);
-    console.log("saved code cpp");
+const { filter } = require("./scan");
 
-    fs.writeFile("./inp.txt", inp, err => {
-      if (err) console.log(err);
-      console.log("saved inp");
+io.on("connection", soc => {
+  let user = soc.id;
+  soc.on("new-user", name => {
+    user = name;
+    if (filter(user)) user = "****";
+    users[soc.id] = name;
+    io.emit("all", users);
+    // console.log(`${user} Connected`);
+    soc.broadcast.emit("new-user", user);
+
+    soc.on("disconnect", () => {
+      // console.log(`${user} Disconnected`);
+      io.emit("user-left", user);
+      delete users[soc.id];
+      io.emit("all", users);
     });
 
-    exec(
-      "g++ code.cpp && timeout -k 1 5 ./a.out < inp.txt",
-      (error, stdout, stderr) => {
-        let sendOut;
-        if (error) {
-          console.log(`err: ${error}`);
-          sendOut = { out: error.message, status: 500 };
-          let msg = error.message.split("\n");
-          if (msg.length == 2) msg[0] = "tle";
-          else msg[0] = "";
-          msg = msg.join("");
-          console.log(msg);
-
-          res.json({ out: msg, status: 501 });
-          return;
-        } else {
-          sendOut = { out: stdout, status: 200 };
-        }
-        console.log(sendOut);
-        res.json(sendOut);
-      }
-    );
-  });
-  // console.log(req.body);
-});
-
-app.post("/python", (req, res) => {
-  code = req.body.code;
-  inp = req.body.inp;
-
-  // security
-  if (scan(code)) {
-    res.json({ out: "You Cannot Interact with system", status: 200 });
-    return;
-  }
-
-  fs.writeFile("./code.py", code, err => {
-    if (err) console.log(err);
-    console.log("saved code py");
-
-    fs.writeFile("./inp.txt", inp, err => {
-      if (err) console.log(err);
-      console.log("saved inp");
+    soc.on("msg", msg => {
+      if (filter(msg)) msg = "****";
+      console.log(`${user} : ${msg}`);
+      soc.broadcast.emit("msg", { user, msg });
     });
-
-    exec("timeout -k 1 5 python code.py < inp.txt", (error, stdout, stderr) => {
-      let sendOut;
-      if (error) {
-        console.log(`err: ${error}`);
-        sendOut = { out: error.message, status: 500 };
-        let msg = error.message.split("\n");
-        if (msg.length == 2) msg[0] = "tle";
-        else msg[0] = "";
-        msg = msg.join("");
-        console.log(msg);
-
-        res.json({ out: msg, status: 501 });
-        return;
-      } else {
-        sendOut = { out: stdout, status: 200 };
-      }
-      console.log(sendOut);
-      res.json(sendOut);
+    soc.on("typing", () => {
+      soc.broadcast.emit("typing", user);
+    });
+    soc.on("not-typing", () => {
+      soc.broadcast.emit("not-typing", user);
     });
   });
-  // console.log(req.body);
 });
 
-app.listen(process.env.PORT || 5000);
+server.listen(process.env.PORT || 5000);
 console.log("server at : localhost:5000");

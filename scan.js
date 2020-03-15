@@ -20,3 +20,12 @@ exports.scan = code => {
     return false;
   }
 };
+
+const badWords = ["fuck"];
+
+exports.filter = text => {
+  let str = badWords.join("|");
+  let re = new RegExp(str, "i");
+
+  return re.test(text);
+};
