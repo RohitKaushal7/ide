@@ -21,7 +21,7 @@ exports.scan = code => {
   }
 };
 
-const badWords = ["fuck"];
+const badWords = ["app"];
 
 exports.filter = text => {
   let str = badWords.join("|");
